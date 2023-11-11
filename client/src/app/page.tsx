@@ -1,23 +1,21 @@
 "use client";
 
 import { trpc } from "../utils/trpc";
+import { User } from "../../../server/src/router";
+import { useState } from "react";
 
 export default function Home() {
-  let {
-    data: user,
-    isLoading,
-    isError,
-    error,
-  } = trpc.getUserById.useQuery({ id: "1" });
+  let { data, isLoading, error } = trpc.getUserById.useQuery<User>({
+    id: "1",
+  });
   const userCreator = trpc.createUser.useMutation();
+  const [name, setName] = useState("");
 
-  // Handle the loading state
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // Handle the error state
-  if (isError) {
+  if (error !== null) {
     return (
       <div>
         <p>An error occurred: {error?.message}</p>
@@ -25,17 +23,33 @@ export default function Home() {
     );
   }
 
-  // Now we can safely assume `user` is defined
+  const handleSubmit = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    userCreator.mutate({ name: name });
+  };
+
   return (
     <div>
-      {user && <p>{user.name}</p>}{" "}
-      {/* Check if user is defined before rendering */}
-      <button
-        onClick={() => userCreator.mutate({ name: "Frodo", bio: "aaaaa" })}
-      >
-        Create Frodo
-      </button>
-      <p>aaaa: {userCreator.data?.name}</p>
+      {data && <p>{data.name}</p>}
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter a name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <button type="submit" disabled={userCreator.status === "pending"}>
+          Create User
+        </button>
+      </form>
+      {userCreator.isError && (
+        <p>Error creating user: {userCreator.error.message}</p>
+      )}
+      {userCreator.isSuccess && (
+        <p>
+          Created: {userCreator.data.id}: {userCreator.data.name}
+        </p>
+      )}
     </div>
   );
 }
