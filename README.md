@@ -2,23 +2,25 @@
 
 ## resource
 
-yarn
-workspace
+- yarn
+- [yarn Workspaces](https://classic.yarnpkg.com/lang/en/docs/workspaces/)
 
-trpc
-fastify
-prisma
+### frontend
 
-nextjs
+- [Next.js](https://nextjs.org/docs/getting-started/installation)
+- [tRPC](https://trpc.io/)
 
-lambda
-aws-lambda-fastify
-cdk
+#### hosting(frontend)
 
-## note
+- Vercel
 
-- use docker deploying server cdk stack.
+### backend
 
-- `yarn create next-app`
-- `cdk init app --language typescript`
-- Lambda > [your lambda] > Configuration > Function URL
+- [fastify](https://fastify.dev/)
+- [tRPC](https://trpc.io/)
+- [Prisma](https://www.prisma.io/) (未実装)
+
+#### hosting(backend)
+
+- AWS CDK (backend)
+- [aws-lambda-fastify](https://github.com/fastify/aws-lambda-fastify)
